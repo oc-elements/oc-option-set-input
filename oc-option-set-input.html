@@ -1,0 +1,77 @@
+<link rel="import" href="../polymer/polymer.html">
+<link rel="import" href="../paper-input/paper-input.html">
+<link rel="import" href="../paper-button/paper-button.html">
+
+<!--
+`oc-optionset-input`
+Element for capturing a new option set
+
+@demo demo/index.html
+-->
+
+<dom-module id="oc-optionset-input">
+
+  <style>
+    :host {
+      display: block;
+    }
+    .action {
+      margin: 10px;
+    }
+  </style>
+
+  <template>
+    <paper-input id="inputName" label="Name" required auto-validate error-message="Please provide a name"></paper-input>
+    <paper-input id="inputDisplayName" label="Display Name" required auto-validate error-message="Please provide a display name"></paper-input>
+    <paper-input id="inputDescription" label="Description" required auto-validate error-message="Please provide a description"></paper-input>
+    <paper-button class="action" on-tap="_onAction" >[[ actionName ]]</paper-button>
+  </template>
+
+  <script>
+    Polymer({
+      is: 'oc-optionset-input',
+
+      properties: {
+        actionName: String
+      },
+
+      /**
+       * Populate the Option Set details, cause the element to go edit mode (will fire on-save event in stead of on-create)
+       * @param {{ name:String, displayName:String, description:String }} optionSetDetails
+       */
+      setOptionSetDetails: function(optionSetDetails) {
+        this.$.inputName.value = optionSetDetails.name;
+        this.$.inputDisplayName.value = optionSetDetails.displayName;
+        this.$.inputDescription.value = optionSetDetails.description;
+      },
+
+      _onAction: function() {
+        if (this._valid) {
+          this.fire('action', {
+            name: this.$.inputName.value,
+            displayName: this.$.inputDisplayName.value,
+            description: this.$.inputDescription.value
+          });
+        }
+      },
+
+      _valid: function() {
+        return !(this.$.inputName.invalid || this.$.inputDisplayName.invalid || this.$.inputDescription.invalid);
+      },
+
+      clear: function() {
+        this.$.inputName.autoValidate = false;
+        this.$.inputName.value = '';
+        this.$.inputName.autoValidate = true;
+
+        this.$.inputDisplayName.autoValidate = false;
+        this.$.inputDisplayName.value = '';
+        this.$.inputDisplayName.autoValidate = true;
+
+        this.$.inputDescription.autoValidate = false;
+        this.$.inputDescription.value = '';
+        this.$.inputDescription.autoValidate = true;
+      }
+    });
+  </script>
+</dom-module>
